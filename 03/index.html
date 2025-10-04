@@ -59,6 +59,7 @@
         scene.add(initKnot);
         torusArr.push(initKnot);
         size++;
+        estimate(); // Bonus
 
         // Part 1: New torus knot on each click at the current mouse position
         renderer.domElement.onmousedown = function( e ){          
@@ -87,6 +88,7 @@
               size++;
               LASTOBJECT = torusKnot;
               unreleasedClick = true;
+              estimate(); // Bonus
             }
           };
 
@@ -135,6 +137,15 @@
             console.log("Pressed f-key");
             FLICKERING = !FLICKERING;
             console.log("FLICKERING = " + FLICKERING);
+          } else if (e.key == 'w') {
+            // Bonus: Visualize all placed (pink/green) toruses as wireframes
+            WIREFRAME = !WIREFRAME;
+
+            if (!WIREFRAME) {
+              for (var i = 1; i < size; i++) {
+                torusArr[i].material.wireframe = WIREFRAME;
+              }
+            }
           }
         }
 
@@ -169,6 +180,21 @@
         
       };
 
+
+      // Bonus: Estimate vertices, edges and faces
+      function estimate() {
+        let vertices = 0, edges = 0, faces = 0;
+        
+        for(var i = 0; i < size; i++) {
+          vertices += torusArr[i].geometry.attributes.position.count;
+          faces += torusArr[i].geometry.index.count / 3;
+        }
+
+        edges = faces * 3 / 2; // an edge is shared between two triangles
+
+        console.log("V: " + vertices + " | E: " + edges + " | F: " + faces);
+      };
+
       function animate() {
         requestAnimationFrame( animate );
 
@@ -181,6 +207,14 @@
             t.material.transparent = true;
             t.material.opacity = Math.random();
             t.material.needsUpdate = true;
+          }
+        }
+
+        // Bonus: Toggle on wireframe
+        if (WIREFRAME) {
+          console.log("animating");
+          for (var i = 1; i < size; i++) {
+              torusArr[i].material.wireframe = WIREFRAME;
           }
         }
 
